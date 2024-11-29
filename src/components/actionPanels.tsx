@@ -5,12 +5,14 @@ import {
   brewInstallCommand,
   brewUninstallCommand,
   brewUpgradeCommand,
+  Service,
 } from "../brew";
 import { Cask, Formula, OutdatedCask, OutdatedFormula } from "../brew";
 import { FormulaInfo } from "./formulaInfo";
 import { CaskInfo } from "./caskInfo";
 import * as Actions from "./actions";
 import { useTerminalApp } from "./runInTerminal";
+import { ServiceRemoveAction } from "./actions";
 
 const DebugSection = (props: { obj: Cask | Formula }) => (
   <ActionPanel.Section>
@@ -271,6 +273,27 @@ export function OutdatedActionPanel(props: {
           style={Action.Style.Destructive}
           onAction={() => runCommandInTerminal(brewUninstallCommand(outdated))}
         />
+      </ActionPanel.Section>
+    </ActionPanel>
+  );
+}
+
+export function ServiceActionPanel(props: {
+  service: Service;
+  onAction: (result: boolean) => void;
+}): JSX.Element {
+  return (
+    <ActionPanel>
+      <ActionPanel.Section>
+        {props.service.status === "stopped" || props.service.status === "none" ? (
+          <Actions.ServiceStartAction service={props.service} onAction={props.onAction} />
+        ) : (
+          <Actions.ServiceStopAction service={props.service} onAction={props.onAction} />
+        )}
+        <Actions.ServiceRestartAction service={props.service} onAction={props.onAction} />
+      </ActionPanel.Section>
+      <ActionPanel.Section>
+        <ServiceRemoveAction service={props.service} onAction={props.onAction} />
       </ActionPanel.Section>
     </ActionPanel>
   );

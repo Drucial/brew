@@ -13,7 +13,8 @@
     "pernielsentikaer",
     "stelo",
     "vyacheslav",
-    "j3lte"
+    "j3lte",
+    "drucial_white"
   ],
   "license": "MIT",
   "icon": "icon.png",
@@ -45,6 +46,13 @@
       "subtitle": "Brew",
       "description": "Upgrade brew formulae & casks",
       "mode": "no-view"
+    },
+    {
+      "name": "services",
+      "title": "Services",
+      "subtitle": "Brew",
+      "description": "List and manage brew services",
+      "mode": "view"
     },
     {
       "name": "clean-up",

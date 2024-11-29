@@ -7,6 +7,11 @@ import {
   brewUnpinFormula,
   brewUpgrade,
   brewUpgradeAll,
+  brewServiceRemove,
+  Service,
+  brewServiceRestart,
+  brewServiceStop,
+  brewServiceStart,
 } from "../brew";
 import { preferences } from "../preferences";
 import { showActionToast, showFailureToast } from "../utils";
@@ -16,7 +21,7 @@ export function FormulaInstallAction(props: {
   formula: Cask | Formula;
   onAction: (result: boolean) => void;
 }): JSX.Element {
-  // TD: Support installing other versions?
+  // TD: Support installing other versions? Drew: Yes, please 🙏!
   return (
     <Action
       title={"Install"}
@@ -173,3 +178,105 @@ async function unpin(formula: Formula | OutdatedFormula): Promise<boolean> {
     return false;
   }
 }
+
+export function ServiceStartAction(props: { service: Service; onAction: (result: boolean) => void }): JSX.Element {
+  return (
+    <Action
+      title="Start"
+      icon={Icon.Play}
+      shortcut={{ modifiers: ["cmd"], key: "s" }}
+      onAction={async () => {
+        props.onAction(await startService(props.service));
+      }}
+    />
+  );
+}
+
+export function ServiceStopAction(props: { service: Service; onAction: (result: boolean) => void }): JSX.Element {
+  return (
+    <Action
+      title="Stop"
+      icon={Icon.Stop}
+      shortcut={{ modifiers: ["cmd"], key: "x" }}
+      style={Action.Style.Destructive}
+      onAction={async () => {
+        props.onAction(await stopService(props.service));
+      }}
+    />
+  );
+}
+
+export function ServiceRestartAction(props: { service: Service; onAction: (result: boolean) => void }): JSX.Element {
+  return (
+    <Action
+      title="Restart"
+      icon={Icon.Repeat}
+      shortcut={{ modifiers: ["cmd"], key: "r" }}
+      onAction={async () => {
+        props.onAction(await restartService(props.service));
+      }}
+    />
+  );
+}
+
+export function ServiceRemoveAction(props: { service: Service; onAction: (result: boolean) => void }): JSX.Element {
+  return (
+    <Action
+      title="Remove"
+      icon={Icon.Trash}
+      shortcut={Keyboard.Shortcut.Common.Remove}
+      style={Action.Style.Destructive}
+      onAction={async () => {
+        props.onAction(await removeService(props.service));
+      }}
+    />
+  );
+}
+
+async function startService(service: Service): Promise<boolean> {
+  const abort = showActionToast({ title: `Starting ${service.name}`, cancelable: true });
+  try {
+    await brewServiceStart(service, abort);
+    showToast(Toast.Style.Success, `Started ${service.name}`);
+    return true;
+  } catch (err) {
+    showFailureToast("Start failed", err as Error);
+    return false;
+  }
+}
+
+async function stopService(service: Service): Promise<boolean> {
+  const abort = showActionToast({ title: `Stopping ${service.name}`, cancelable: true });
+  try {
+    await brewServiceStop(service, abort);
+    showToast(Toast.Style.Success, `Stopped ${service.name}`);
+    return true;
+  } catch (err) {
+    showFailureToast("Stop failed", err as Error);
+    return false;
+  }
+}
+
+async function restartService(service: Service): Promise<boolean> {
+  const abort = showActionToast({ title: `Restarting ${service.name}`, cancelable: true });
+  try {
+    await brewServiceRestart(service, abort);
+    showToast(Toast.Style.Success, `Restarted ${service.name}`);
+    return true;
+  } catch (err) {
+    showFailureToast("Restart failed", err as Error);
+    return false;
+  }
+}
+
+async function removeService(service: Service): Promise<boolean> {
+  const abort = showActionToast({ title: `Removing ${service.name}`, cancelable: true });
+  try {
+    await brewServiceRemove(service, abort);
+    showToast(Toast.Style.Success, `Removed ${service.name}`);
+    return true;
+  } catch (err) {
+    showFailureToast("Remove failed", err as Error);
+    return false;
+  }
+} 

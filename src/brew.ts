@@ -542,3 +542,47 @@ async function execBrewEnv(): Promise<NodeJS.ProcessEnv> {
   env["HOMEBREW_BROWSER"] = utils.bundleIdentifier;
   return env;
 }
+
+export interface Service {
+  name: string;
+  status: "started" | "stopped" | "error" | "none";
+  user?: string;
+  file?: string;
+  error?: string;
+  exit?: number;
+}
+
+interface RawBrewService {
+  name: string;
+  status: string;
+  user?: string;
+  file?: string;
+  error?: string;
+  exit?: number;
+}
+
+export async function brewServicesList(cancel?: AbortController): Promise<Service[]> {
+  const output = await execBrew("services list --json", cancel);
+  const services = JSON.parse(output.stdout);
+  return services.map((service: RawBrewService) => ({
+    name: service.name,
+    status: service.status.toLowerCase(),
+    action: service.status.toLowerCase() === 'none' ? 'start' : 'stop',
+  }));
+}
+
+export async function brewServiceStart(service: Service, cancel?: AbortController): Promise<void> {
+  await execBrew(`services start ${service.name}`, cancel);
+}
+
+export async function brewServiceStop(service: Service, cancel?: AbortController): Promise<void> {
+  await execBrew(`services stop ${service.name}`, cancel);
+}
+
+export async function brewServiceRestart(service: Service, cancel?: AbortController): Promise<void> {
+  await execBrew(`services restart ${service.name}`, cancel);
+}
+
+export async function brewServiceRemove(service: Service, cancel?: AbortController): Promise<void> {
+  await execBrew(`services cleanup ${service.name}`, cancel);
+}
