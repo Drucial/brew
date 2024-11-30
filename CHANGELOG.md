@@ -1,5 +1,9 @@
 # Brew Changelog
 
+## [Improvements] - 2024-11-30
+
+- Added support for managing brew services
+
 ## [Improvements & Bugfix] - 2024-09-22
 
 - Fix detail panel for tap that doesn't have a license ([#12507](https://github.com/raycast/extensions/issues/12507))
