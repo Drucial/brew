@@ -18,7 +18,7 @@ export default function Command() {
 function ServiceListItem({ service, onAction }: { service: Service; onAction: () => void }) {
   const icon = { source: Icon.Circle };
   let tintColor: Color | undefined;
-  
+
   switch (service.status) {
     case "started":
       tintColor = Color.Green;

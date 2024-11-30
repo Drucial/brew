@@ -279,4 +279,4 @@ async function removeService(service: Service): Promise<boolean> {
     showFailureToast("Remove failed", err as Error);
     return false;
   }
-} 
+}

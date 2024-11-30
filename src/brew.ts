@@ -567,7 +567,7 @@ export async function brewServicesList(cancel?: AbortController): Promise<Servic
   return services.map((service: RawBrewService) => ({
     name: service.name,
     status: service.status.toLowerCase(),
-    action: service.status.toLowerCase() === 'none' ? 'start' : 'stop',
+    action: service.status.toLowerCase() === "none" ? "start" : "stop",
   }));
 }
 

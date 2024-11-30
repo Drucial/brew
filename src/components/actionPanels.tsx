@@ -278,10 +278,7 @@ export function OutdatedActionPanel(props: {
   );
 }
 
-export function ServiceActionPanel(props: {
-  service: Service;
-  onAction: (result: boolean) => void;
-}): JSX.Element {
+export function ServiceActionPanel(props: { service: Service; onAction: (result: boolean) => void }): JSX.Element {
   return (
     <ActionPanel>
       <ActionPanel.Section>
